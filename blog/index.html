@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog - Shivam Kumar</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <header>
+        <nav class="navbar">
+            <div class="nav-container">
+                <a href="/" class="logo">Shivam Kumar</a>
+                <ul class="nav-menu">
+                    <li><a href="/">Home</a></li>
+                    <li><a href="/blog" class="active">Blog</a></li>
+                    <li><a href="/#contact">Contact</a></li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+
+    <main class="blog-main">
+        <div class="blog-container">
+            <div class="blog-header">
+                <h1>Blog</h1>
+                <p>Thoughts on backend development, automation, and tech</p>
+            </div>
+
+            <div class="search-filter">
+                <input type="text" id="searchInput" placeholder="Search posts...">
+                <select id="labelFilter">
+                    <option value="">All Labels</option>
+                </select>
+            </div>
+
+            <div id="blogPosts" class="blog-posts">
+                <div class="loading">
+                    <i class="fas fa-spinner fa-spin"></i>
+                    <p>Loading posts...</p>
+                </div>
+            </div>
+
+            <div id="pagination" class="pagination"></div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="footer-container">
+            <p>&copy; 2025 Shivam Kumar. All rights reserved.</p>
+            <div class="social-links">
+                <a href="https://github.com/shivamnox" target="_blank"><i class="fab fa-github"></i></a>
+                <a href="mailto:shivamnox@gmail.com"><i class="fas fa-envelope"></i></a>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
