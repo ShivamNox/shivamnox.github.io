@@ -172,7 +172,7 @@ function renderPosts() {
         return `
             <div class="post-card" onclick="window.location.href='post.html?slug=${post.filename}'">
                 <div class="post-image">
-                    ${post.image ? `<img src="${post.image}" alt="${post.title}">` : ''}
+                    ${post.image ? `<img src="${post.image}" alt="${post.title}" onerror="this.style.display='none'">` : ''}
                 </div>
                 <div class="post-content">
                     <div class="post-meta">
