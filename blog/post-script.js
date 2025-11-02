@@ -1,13 +1,12 @@
-// Blog configuration
-const POSTS_PER_PAGE = 10;
+// Configuration
 const GITHUB_USERNAME = 'shivamnox';
 const POSTS_DIR = '/posts';
 
-// Global state
-let allPosts = [];
-let filteredPosts = [];
-let currentPage = 1;
-let allLabels = new Set();
+// Get post slug from URL
+function getPostSlug() {
+    const urlParams = new URLSearchParams(window.location.search);
+    return urlParams.get('slug');
+}
 
 // Parse markdown frontmatter
 function parseFrontmatter(content) {
@@ -37,9 +36,14 @@ function parseFrontmatter(content) {
     return { metadata, content: markdownContent };
 }
 
-// Simple markdown to HTML converter
+// Enhanced markdown to HTML converter
 function markdownToHtml(markdown) {
     let html = markdown;
+    
+    // Code blocks (must be first)
+    html = html.replace(/```(\w+)?\n([\s\S]*?)```/g, (match, lang, code) => {
+        return `<pre><code class="language-${lang || 'plaintext'}">${escapeHtml(code.trim())}</code></pre>`;
+    });
     
     // Headers
     html = html.replace(/^### (.*$)/gim, '<h3>$1</h3>');
@@ -53,211 +57,206 @@ function markdownToHtml(markdown) {
     html = html.replace(/\*(.*?)\*/g, '<em>$1</em>');
     
     // Links
-    html = html.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2">$1</a>');
+    html = html.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener">$1</a>');
     
     // Images
-    html = html.replace(/!\[([^\]]*)\]\(([^)]+)\)/g, '<img src="$2" alt="$1">');
-    
-    // Code blocks
-    html = html.replace(/```(\w+)?\n([\s\S]*?)```/g, '<pre><code>$2</code></pre>');
+    html = html.replace(/!\[([^\]]*)\]\(([^)]+)\)/g, '<img src="$2" alt="$1" loading="lazy">');
     
     // Inline code
     html = html.replace(/`([^`]+)`/g, '<code>$1</code>');
     
-    // Line breaks
-    html = html.replace(/\n\n/g, '</p><p>');
-    html = '<p>' + html + '</p>';
+    // Blockquotes
+    html = html.replace(/^> (.*$)/gim, '<blockquote>$1</blockquote>');
+    
+    // Unordered lists
+    html = html.replace(/^\* (.*$)/gim, '<li>$1</li>');
+    html = html.replace(/(<li>.*<\/li>)/s, '<ul>$1</ul>');
+    
+    // Ordered lists
+    html = html.replace(/^\d+\. (.*$)/gim, '<li>$1</li>');
+    
+    // Paragraphs
+    html = html.split('\n\n').map(para => {
+        if (para.match(/^<(h[1-3]|ul|ol|pre|blockquote)/)) {
+            return para;
+        }
+        return `<p>${para}</p>`;
+    }).join('\n');
     
     return html;
 }
 
-// Fetch posts index
-async function fetchPostsIndex() {
+// Escape HTML for code blocks
+function escapeHtml(text) {
+    const map = {
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#039;'
+    };
+    return text.replace(/[&<>"']/g, m => map[m]);
+}
+
+// Fetch all posts for related posts
+async function fetchAllPosts() {
     try {
         const response = await fetch(`${POSTS_DIR}/index.json`);
         if (!response.ok) {
             throw new Error('Posts index not found');
         }
-        return await response.json();
+        const postsIndex = await response.json();
+        
+        const postsPromises = postsIndex.map(async (postFile) => {
+            try {
+                const response = await fetch(`${POSTS_DIR}/${postFile}`);
+                const content = await response.text();
+                const { metadata } = parseFrontmatter(content);
+                
+                return {
+                    filename: postFile.replace('.md', ''),
+                    title: metadata.title || 'Untitled',
+                    date: metadata.date || new Date().toISOString(),
+                    labels: metadata.labels || []
+                };
+            } catch (error) {
+                return null;
+            }
+        });
+        
+        return (await Promise.all(postsPromises)).filter(post => post !== null);
     } catch (error) {
-        console.error('Error fetching posts index:', error);
+        console.error('Error fetching all posts:', error);
         return [];
     }
 }
 
-// Load all posts
-async function loadPosts() {
-    const postsIndex = await fetchPostsIndex();
-    
-    if (postsIndex.length === 0) {
-        document.getElementById('blogPosts').innerHTML = '<div class="no-posts">No posts found. Create posts/index.json to get started!</div>';
-        return;
+// Find related posts based on labels
+function findRelatedPosts(currentPostLabels, currentSlug, allPosts) {
+    if (!currentPostLabels || currentPostLabels.length === 0) {
+        return [];
     }
     
-    const postsPromises = postsIndex.map(async (postFile) => {
-        try {
-            const response = await fetch(`${POSTS_DIR}/${postFile}`);
-            const content = await response.text();
-            const { metadata, content: markdown } = parseFrontmatter(content);
-            
-            // Extract excerpt (first 150 chars of content)
-            const plainText = markdown.replace(/[#*`[\]()]/g, '').trim();
-            const excerpt = plainText.substring(0, 150) + (plainText.length > 150 ? '...' : '');
-            
-            // Add labels to set
-            if (metadata.labels) {
-                metadata.labels.forEach(label => allLabels.add(label));
-            }
-            
+    const relatedPosts = allPosts
+        .filter(post => post.filename !== currentSlug)
+        .map(post => {
+            const commonLabels = post.labels.filter(label => 
+                currentPostLabels.includes(label)
+            );
             return {
-                filename: postFile.replace('.md', ''),
-                title: metadata.title || 'Untitled',
-                author: metadata.author || GITHUB_USERNAME,
-                date: metadata.date || new Date().toISOString(),
-                image: metadata.image || '',
-                labels: metadata.labels || [],
-                excerpt: excerpt,
-                content: markdown
+                ...post,
+                relevance: commonLabels.length
             };
-        } catch (error) {
-            console.error(`Error loading post ${postFile}:`, error);
-            return null;
-        }
-    });
+        })
+        .filter(post => post.relevance > 0)
+        .sort((a, b) => b.relevance - a.relevance)
+        .slice(0, 3);
     
-    allPosts = (await Promise.all(postsPromises)).filter(post => post !== null);
-    
-    // Sort by date (newest first)
-    allPosts.sort((a, b) => new Date(b.date) - new Date(a.date));
-    
-    // Initialize filters
-    populateLabelFilter();
-    
-    // Display posts
-    filteredPosts = [...allPosts];
-    renderPosts();
+    return relatedPosts;
 }
 
-// Populate label filter
-function populateLabelFilter() {
-    const labelFilter = document.getElementById('labelFilter');
-    allLabels.forEach(label => {
-        const option = document.createElement('option');
-        option.value = label;
-        option.textContent = label;
-        labelFilter.appendChild(option);
-    });
-}
-
-// Render posts for current page
-function renderPosts() {
-    const blogPostsContainer = document.getElementById('blogPosts');
-    const startIndex = (currentPage - 1) * POSTS_PER_PAGE;
-    const endIndex = startIndex + POSTS_PER_PAGE;
-    const postsToShow = filteredPosts.slice(startIndex, endIndex);
+// Render related posts
+function renderRelatedPosts(relatedPosts) {
+    const relatedContainer = document.getElementById('relatedPosts');
     
-    if (postsToShow.length === 0) {
-        blogPostsContainer.innerHTML = '<div class="no-posts">No posts match your search criteria.</div>';
-        document.getElementById('pagination').innerHTML = '';
+    if (relatedPosts.length === 0) {
+        relatedContainer.innerHTML = '<div class="no-related">No related posts found.</div>';
         return;
     }
     
-    blogPostsContainer.innerHTML = postsToShow.map(post => {
+    relatedContainer.innerHTML = relatedPosts.map(post => {
         const formattedDate = new Date(post.date).toLocaleDateString('en-US', {
             year: 'numeric',
-            month: 'long',
+            month: 'short',
             day: 'numeric'
         });
         
         return `
-            <div class="post-card" onclick="window.location.href='post.html?slug=${post.filename}'">
-                <div class="post-image">
-                    ${post.image ? `<img src="${post.image}" alt="${post.title}" onerror="this.style.display='none'">` : ''}
-                </div>
-                <div class="post-content">
-                    <div class="post-meta">
-                        <span class="post-author">
-                            <i class="fab fa-github"></i>
-                            ${post.author}
-                        </span>
-                        <span class="post-date">
-                            <i class="far fa-calendar"></i>
-                            ${formattedDate}
-                        </span>
-                    </div>
-                    <h3>${post.title}</h3>
-                    <p class="post-excerpt">${post.excerpt}</p>
-                    <div class="post-labels">
-                        ${post.labels.map(label => `<span class="label">${label}</span>`).join('')}
-                    </div>
-                    <a href="post.html?slug=${post.filename}" class="read-more">
-                        Read More <i class="fas fa-arrow-right"></i>
-                    </a>
+            <div class="related-post-card" onclick="window.location.href='post.html?slug=${post.filename}'">
+                <h4>${post.title}</h4>
+                <div class="related-date">
+                    <i class="far fa-calendar"></i>
+                    ${formattedDate}
                 </div>
             </div>
         `;
     }).join('');
-    
-    renderPagination();
 }
 
-// Render pagination
-function renderPagination() {
-    const totalPages = Math.ceil(filteredPosts.length / POSTS_PER_PAGE);
-    const paginationContainer = document.getElementById('pagination');
+// Load and display post
+async function loadPost() {
+    const slug = getPostSlug();
     
-    if (totalPages <= 1) {
-        paginationContainer.innerHTML = '';
+    if (!slug) {
+        document.querySelector('.loading').innerHTML = '<p>Post not found.</p>';
         return;
     }
     
-    let paginationHTML = `
-        <button onclick="changePage(${currentPage - 1})" ${currentPage === 1 ? 'disabled' : ''}>
-            <i class="fas fa-chevron-left"></i> Previous
-        </button>
-        <span class="page-number">Page ${currentPage} of ${totalPages}</span>
-        <button onclick="changePage(${currentPage + 1})" ${currentPage === totalPages ? 'disabled' : ''}>
-            Next <i class="fas fa-chevron-right"></i>
-        </button>
-    `;
-    
-    paginationContainer.innerHTML = paginationHTML;
-}
-
-// Change page
-function changePage(page) {
-    const totalPages = Math.ceil(filteredPosts.length / POSTS_PER_PAGE);
-    if (page < 1 || page > totalPages) return;
-    
-    currentPage = page;
-    renderPosts();
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-}
-
-// Filter posts
-function filterPosts() {
-    const searchTerm = document.getElementById('searchInput').value.toLowerCase();
-    const selectedLabel = document.getElementById('labelFilter').value;
-    
-    filteredPosts = allPosts.filter(post => {
-        const matchesSearch = post.title.toLowerCase().includes(searchTerm) || 
-                            post.excerpt.toLowerCase().includes(searchTerm);
-        const matchesLabel = !selectedLabel || post.labels.includes(selectedLabel);
+    try {
+        // Fetch post content
+        const response = await fetch(`${POSTS_DIR}/${slug}.md`);
+        if (!response.ok) {
+            throw new Error('Post not found');
+        }
         
-        return matchesSearch && matchesLabel;
-    });
-    
-    currentPage = 1;
-    renderPosts();
+        const content = await response.text();
+        const { metadata, content: markdown } = parseFrontmatter(content);
+        
+        // Update page title
+        document.getElementById('pageTitle').textContent = `${metadata.title || 'Post'} - Shivam Kumar`;
+        
+        // Display post
+        document.querySelector('.loading').style.display = 'none';
+        document.getElementById('postContent').style.display = 'block';
+        
+        // Set title
+        document.getElementById('postTitle').textContent = metadata.title || 'Untitled Post';
+        
+        // Set author
+        document.getElementById('postAuthor').textContent = metadata.author || GITHUB_USERNAME;
+        
+        // Set date
+        const formattedDate = new Date(metadata.date || Date.now()).toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+        });
+        document.getElementById('postDate').textContent = formattedDate;
+        
+        // Set featured image
+        if (metadata.image) {
+            document.getElementById('postImage').innerHTML = `<img src="${metadata.image}" alt="${metadata.title}">`;
+        }
+        
+        // Set post body
+        const htmlContent = markdownToHtml(markdown);
+        document.getElementById('postBody').innerHTML = htmlContent;
+        
+        // Highlight code blocks
+        document.querySelectorAll('pre code').forEach((block) => {
+            hljs.highlightElement(block);
+        });
+        
+        // Set labels
+        const labelsContainer = document.getElementById('postLabels');
+        if (metadata.labels && metadata.labels.length > 0) {
+            labelsContainer.innerHTML = metadata.labels.map(label => 
+                `<span class="label" onclick="window.location.href='/blog?label=${encodeURIComponent(label)}'">${label}</span>`
+            ).join('');
+        } else {
+            document.querySelector('.post-labels-section').style.display = 'none';
+        }
+        
+        // Load and display related posts
+        const allPosts = await fetchAllPosts();
+        const relatedPosts = findRelatedPosts(metadata.labels, slug, allPosts);
+        renderRelatedPosts(relatedPosts);
+        
+    } catch (error) {
+        console.error('Error loading post:', error);
+        document.querySelector('.loading').innerHTML = '<p>Error loading post. Please try again.</p>';
+    }
 }
 
-// Event listeners
-document.addEventListener('DOMContentLoaded', () => {
-    loadPosts();
-    
-    document.getElementById('searchInput').addEventListener('input', filterPosts);
-    document.getElementById('labelFilter').addEventListener('change', filterPosts);
-});
-
-// Make changePage available globally
-window.changePage = changePage;
+// Initialize
+document.addEventListener('DOMContentLoaded', loadPost);
