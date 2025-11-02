@@ -1,11 +1,8 @@
-### Title
----
 title: Getting Started with Node.js Backend Development
 author: shivamnox
 date: 2025-01-15
 image: https://images.unsplash.com/photo-1627398242454-45a1465c2479?w=800&q=80
 labels: Backend, Node.js, JavaScript, Tutorial
----
 
 # Getting Started with Node.js Backend Development
 
