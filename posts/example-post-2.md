@@ -1,10 +1,4 @@
----
-title: Docker and Containerization: A Comprehensive Guide
-author: shivamnox
-date: 2025-01-10
-image: https://images.unsplash.com/photo-1605745341112-85968b19335b?w=800&q=80
-labels: DevOps, Docker, Containerization, Tutorial
----
+
 
 # Docker and Containerization: A Comprehensive Guide
 
