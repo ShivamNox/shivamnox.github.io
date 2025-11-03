@@ -9,31 +9,77 @@ let filteredPosts = [];
 let currentPage = 1;
 let allLabels = new Set();
 
-// Parse markdown frontmatter
+// Parse markdown frontmatter - IMPROVED VERSION
 function parseFrontmatter(content) {
-    const frontmatterRegex = /^---\n([\s\S]*?)\n---\n([\s\S]*)$/;
-    const match = content.match(frontmatterRegex);
+    // Remove any BOM or leading whitespace
+    content = content.trim();
     
-    if (!match) {
-        return { metadata: {}, content: content };
+    // Check if content starts with ---
+    if (!content.startsWith('---')) {
+        console.log('No frontmatter found, using defaults');
+        return { 
+            metadata: {
+                title: 'Untitled Post',
+                author: GITHUB_USERNAME,
+                date: new Date().toISOString().split('T')[0],
+                labels: []
+            }, 
+            content: content 
+        };
     }
     
-    const frontmatter = match[1];
-    const markdownContent = match[2];
+    // Find the closing ---
+    const lines = content.split('\n');
+    let endIndex = -1;
     
-    const metadata = {};
-    frontmatter.split('\n').forEach(line => {
-        const [key, ...values] = line.split(':');
-        if (key && values.length) {
-            const value = values.join(':').trim();
-            if (key.trim() === 'labels') {
-                metadata[key.trim()] = value.split(',').map(l => l.trim());
-            } else {
-                metadata[key.trim()] = value.replace(/^["']|["']$/g, '');
+    for (let i = 1; i < lines.length; i++) {
+        if (lines[i].trim() === '---') {
+            endIndex = i;
+            break;
+        }
+    }
+    
+    if (endIndex === -1) {
+        console.log('Frontmatter not closed properly');
+        return { 
+            metadata: {
+                title: 'Untitled Post',
+                author: GITHUB_USERNAME,
+                date: new Date().toISOString().split('T')[0],
+                labels: []
+            }, 
+            content: content 
+        };
+    }
+    
+    // Extract frontmatter and content
+    const frontmatterLines = lines.slice(1, endIndex);
+    const markdownContent = lines.slice(endIndex + 1).join('\n').trim();
+    
+    // Parse frontmatter
+    const metadata = {
+        author: GITHUB_USERNAME,
+        date: new Date().toISOString().split('T')[0],
+        labels: []
+    };
+    
+    frontmatterLines.forEach(line => {
+        const colonIndex = line.indexOf(':');
+        if (colonIndex > 0) {
+            const key = line.substring(0, colonIndex).trim();
+            const value = line.substring(colonIndex + 1).trim();
+            
+            if (key && value) {
+                if (key === 'labels') {
+                    metadata[key] = value.split(',').map(l => l.trim()).filter(l => l);
+                } else {
+                    metadata[key] = value.replace(/^["']|["']$/g, '');
+                }
             }
         }
     });
     
+    console.log('Parsed metadata:', metadata);
     return { metadata, content: markdownContent };
 }
 
