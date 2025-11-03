@@ -6,7 +6,6 @@ image: https://images.unsplash.com/photo-1627398242454-45a1465c2479?w=800&q=80
 labels: Backend, Node.js, JavaScript, Tutorial
 ---
 
-
 # Getting Started with Node.js Backend Development
 
 Node.js has revolutionized backend development by allowing developers to use JavaScript on the server-side. In this post, we'll explore the fundamentals of building scalable backend applications with Node.js.
