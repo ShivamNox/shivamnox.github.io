@@ -1,6 +1,6 @@
 // Configuration
 const GITHUB_USERNAME = 'shivamnox';
-const POSTS_DIR = '/posts';
+const POSTS_DIR = '../posts';
 
 // Get post slug from URL
 function getPostSlug() {
@@ -241,7 +241,7 @@ async function loadPost() {
         const labelsContainer = document.getElementById('postLabels');
         if (metadata.labels && metadata.labels.length > 0) {
             labelsContainer.innerHTML = metadata.labels.map(label => 
-                `<span class="label" onclick="window.location.href='/blog?label=${encodeURIComponent(label)}'">${label}</span>`
+                `<span class="label" onclick="window.location.href='index.html?label=${encodeURIComponent(label)}'">${label}</span>`
             ).join('');
         } else {
             document.querySelector('.post-labels-section').style.display = 'none';
