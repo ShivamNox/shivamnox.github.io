@@ -1,7 +1,7 @@
 // Blog configuration
 const POSTS_PER_PAGE = 10;
 const GITHUB_USERNAME = 'shivamnox';
-const POSTS_DIR = '/posts';
+const POSTS_DIR = '../posts';
 
 // Global state
 let allPosts = [];
