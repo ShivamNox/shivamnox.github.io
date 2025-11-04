@@ -3,7 +3,7 @@ title: Test Post
 author: shivamnox
 date: 2025-01-20
 labels: Test, Markdown, Dev
-image: [https://imagesrcurl](https://img-s-msn-com.akamaized.net/tenant/amp/entityid/AA1PLfTw.img?w=768&h=432&m=6&x=358&y=86&s=407&d=169)
+image: https://cdn.hailuoai.video/moss/prod/2025-06-20-01/video_cover/1750353038373894517-cover_6c6ed6687b5ca41a4898f5ea03491b7d.jpeg
 ---
 
 # This is a Test Post
