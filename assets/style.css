@@ -1,0 +1,33 @@
+body {
+  font-family: system-ui, sans-serif;
+  max-width: 800px;
+  margin: auto;
+  padding: 1rem;
+  line-height: 1.6;
+}
+
+.post-card, .related {
+  border-bottom: 1px solid #ddd;
+  margin-bottom: 20px;
+  padding-bottom: 20px;
+}
+
+.post-card img, .related img {
+  width: 100%;
+  border-radius: 8px;
+}
+
+.labels span {
+  background: #eee;
+  padding: 3px 8px;
+  margin-right: 5px;
+  border-radius: 5px;
+  font-size: 0.8em;
+}
+
+button#load-more {
+  display: block;
+  margin: 20px auto;
+  padding: 10px 20px;
+  cursor: pointer;
+}
