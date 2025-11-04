@@ -1,79 +1,356 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <title>Post | shivamnox</title>
-  <link rel="stylesheet" href="../assets/style.css" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Post - Blog</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/4.3.0/marked.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: #f5f5f5;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        header {
+            background: white;
+            padding: 20px 0;
+            margin-bottom: 40px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .back-link {
+            color: #3498db;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .back-link:hover {
+            text-decoration: underline;
+        }
+        .post-header {
+            background: white;
+            padding: 40px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .post-title {
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            color: #2c3e50;
+        }
+        .post-meta {
+            color: #7f8c8d;
+            font-size: 1.1em;
+            margin-bottom: 20px;
+        }
+        .post-image {
+            width: 100%;
+            max-height: 400px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-bottom: 30px;
+        }
+        .post-content {
+            background: white;
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+        .post-content h1 {
+            margin-top: 30px;
+            margin-bottom: 15px;
+            color: #2c3e50;
+            font-size: 2em;
+        }
+        .post-content h2 {
+            margin-top: 25px;
+            margin-bottom: 12px;
+            color: #34495e;
+            font-size: 1.6em;
+        }
+        .post-content h3 {
+            margin-top: 20px;
+            margin-bottom: 10px;
+            color: #34495e;
+            font-size: 1.3em;
+        }
+        .post-content p {
+            margin-bottom: 15px;
+            line-height: 1.8;
+        }
+        .post-content ul, .post-content ol {
+            margin-bottom: 15px;
+            margin-left: 25px;
+        }
+        .post-content li {
+            margin-bottom: 8px;
+        }
+        .post-content code {
+            background: #f4f4f4;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+        }
+        .post-content pre {
+            background: #f4f4f4;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            margin-bottom: 15px;
+        }
+        .post-content pre code {
+            background: none;
+            padding: 0;
+        }
+        .post-labels-section {
+            background: white;
+            padding: 30px 40px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+        .post-labels-section h3 {
+            margin-bottom: 15px;
+            color: #2c3e50;
+        }
+        .post-labels {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .label {
+            background: #e8f4f8;
+            color: #2980b9;
+            padding: 6px 15px;
+            border-radius: 20px;
+            font-size: 0.95em;
+            font-weight: 500;
+        }
+        .related-posts {
+            background: white;
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .related-posts h3 {
+            margin-bottom: 20px;
+            color: #2c3e50;
+        }
+        .related-post-card {
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 15px;
+            text-decoration: none;
+            color: inherit;
+            display: block;
+            transition: all 0.3s;
+        }
+        .related-post-card:hover {
+            border-color: #3498db;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            transform: translateX(5px);
+        }
+        .related-post-title {
+            font-size: 1.2em;
+            margin-bottom: 8px;
+            color: #2c3e50;
+        }
+        .related-post-meta {
+            color: #7f8c8d;
+            font-size: 0.9em;
+        }
+        .loading {
+            text-align: center;
+            padding: 60px 20px;
+            color: #7f8c8d;
+        }
+        @media (max-width: 768px) {
+            .post-header, .post-content, .post-labels-section, .related-posts {
+                padding: 20px;
+            }
+            .post-title {
+                font-size: 1.8em;
+            }
+        }
+    </style>
 </head>
 <body>
-  <div id="post"></div>
-  <h3>Related Posts</h3>
-  <div id="related-posts"></div>
+    <header>
+        <div class="container">
+            <a href="index.html" class="back-link">← Back to Blog</a>
+        </div>
+    </header>
+    
+    <div class="container">
+        <div id="post-container"></div>
+    </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-  <script>
-    async function loadPost() {
-      const params = new URLSearchParams(location.search);
-      const slug = params.get('slug');
-      if (!slug) return;
-
-      const res = await fetch(`../posts/${slug}.md`);
-      const text = await res.text();
-      const meta = extractFrontmatter(text);
-      const content = text.split('---')[2]?.trim() || "";
-
-      document.title = meta.title + " | shivamnox";
-      document.getElementById('post').innerHTML = `
-        <h1>${meta.title}</h1>
-        <p class="meta">${meta.author} • ${formatDate(meta.date)}</p>
-        <img src="${meta.image}" alt="${meta.title}" />
-        <div class="content">${marked.parse(content)}</div>
-        <p class="labels">${meta.labels.split(',').map(l => `<span>${l.trim()}</span>`).join(' ')}</p>
-      `;
-
-      loadRelated(meta.labels.split(',').map(l => l.trim()), slug);
-    }
-
-    async function loadRelated(labels, currentSlug) {
-      const res = await fetch('../posts/index.json');
-      const files = await res.json();
-      const relatedContainer = document.getElementById('related-posts');
-      
-      for (const file of files) {
-        if (file.replace('.md', '') === currentSlug) continue;
-        const post = await fetch(`../posts/${file}`).then(r => r.text());
-        const meta = extractFrontmatter(post);
-        const postLabels = meta.labels.split(',').map(l => l.trim());
-        if (labels.some(l => postLabels.includes(l))) {
-          const el = document.createElement('div');
-          el.className = 'related';
-          el.innerHTML = `
-            <a href="post.html?slug=${file.replace('.md','')}">
-              <img src="${meta.image}" alt="${meta.title}" />
-              <h4>${meta.title}</h4>
-            </a>`;
-          relatedContainer.appendChild(el);
+    <script>
+        async function fetchPostsList() {
+            try {
+                const response = await fetch('../posts/index.json');
+                return await response.json();
+            } catch (error) {
+                console.error('Error loading posts list:', error);
+                return [];
+            }
         }
-      }
-    }
 
-    function extractFrontmatter(md) {
-      const match = md.match(/^---\n([\s\S]*?)\n---/);
-      const fm = {};
-      if (match) {
-        match[1].split('\n').forEach(line => {
-          const [key, ...rest] = line.split(':');
-          fm[key.trim()] = rest.join(':').trim();
-        });
-      }
-      return fm;
-    }
+        async function fetchPost(filename) {
+            try {
+                const response = await fetch(`../posts/${filename}`);
+                const text = await response.text();
+                return parseMarkdown(text, filename);
+            } catch (error) {
+                console.error(`Error loading post ${filename}:`, error);
+                return null;
+            }
+        }
 
-    function formatDate(d) {
-      return new Date(d).toLocaleDateString('en-US', {year:'numeric', month:'long', day:'numeric'});
-    }
+        function parseMarkdown(text, filename) {
+            const frontmatterRegex = /^---\s*\n([\s\S]*?)\n---\s*\n([\s\S]*)$/;
+            const match = text.match(frontmatterRegex);
+            
+            if (!match) return null;
+            
+            const frontmatter = {};
+            const frontmatterLines = match[1].split('\n');
+            frontmatterLines.forEach(line => {
+                const [key, ...valueParts] = line.split(':');
+                if (key && valueParts.length) {
+                    frontmatter[key.trim()] = valueParts.join(':').trim();
+                }
+            });
+            
+            const content = match[2].trim();
+            const slug = filename.replace('.md', '');
+            
+            return {
+                title: frontmatter.title || 'Untitled',
+                author: frontmatter.author || 'Anonymous',
+                date: frontmatter.date || '',
+                labels: frontmatter.labels ? frontmatter.labels.split(',').map(l => l.trim()) : [],
+                image: frontmatter.image || '',
+                content: content,
+                slug: slug
+            };
+        }
 
-    loadPost();
-  </script>
+        function formatDate(dateString) {
+            if (!dateString) return '';
+            const date = new Date(dateString);
+            return date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+        }
+
+        function findRelatedPosts(currentPost, allPosts) {
+            const related = [];
+            const currentLabels = currentPost.labels.map(l => l.toLowerCase());
+            
+            for (const post of allPosts) {
+                if (post.slug === currentPost.slug) continue;
+                
+                const postLabels = post.labels.map(l => l.toLowerCase());
+                const commonLabels = currentLabels.filter(l => postLabels.includes(l));
+                
+                if (commonLabels.length > 0) {
+                    related.push({
+                        post: post,
+                        score: commonLabels.length
+                    });
+                }
+            }
+            
+            related.sort((a, b) => b.score - a.score);
+            return related.slice(0, 3).map(r => r.post);
+        }
+
+        function renderPost(post, relatedPosts) {
+            const container = document.getElementById('post-container');
+            
+            const html = `
+                <div class="post-header">
+                    <h1 class="post-title">${post.title}</h1>
+                    <div class="post-meta">
+                        By ${post.author} • ${formatDate(post.date)}
+                    </div>
+                </div>
+                
+                ${post.image ? `<img src="${post.image}" alt="${post.title}" class="post-image">` : ''}
+                
+                <div class="post-content">
+                    ${marked.parse(post.content)}
+                </div>
+                
+                <div class="post-labels-section">
+                    <h3>Labels</h3>
+                    <div class="post-labels">
+                        ${post.labels.map(label => `<span class="label">${label}</span>`).join('')}
+                    </div>
+                </div>
+                
+                ${relatedPosts.length > 0 ? `
+                    <div class="related-posts">
+                        <h3>Related Posts</h3>
+                        ${relatedPosts.map(relPost => `
+                            <a href="post.html?slug=${relPost.slug}" class="related-post-card">
+                                <div class="related-post-title">${relPost.title}</div>
+                                <div class="related-post-meta">By ${relPost.author} • ${formatDate(relPost.date)}</div>
+                            </a>
+                        `).join('')}
+                    </div>
+                ` : ''}
+            `;
+            
+            container.innerHTML = html;
+            document.title = `${post.title} - Blog`;
+        }
+
+        async function init() {
+            const container = document.getElementById('post-container');
+            container.innerHTML = '<div class="loading">Loading post...</div>';
+            
+            const urlParams = new URLSearchParams(window.location.search);
+            const slug = urlParams.get('slug');
+            
+            if (!slug) {
+                container.innerHTML = '<div class="loading">Post not found</div>';
+                return;
+            }
+            
+            const postFiles = await fetchPostsList();
+            const allPosts = [];
+            
+            for (const file of postFiles) {
+                const post = await fetchPost(file);
+                if (post) {
+                    allPosts.push(post);
+                }
+            }
+            
+            const currentPost = allPosts.find(p => p.slug === slug);
+            
+            if (!currentPost) {
+                container.innerHTML = '<div class="loading">Post not found</div>';
+                return;
+            }
+            
+            const relatedPosts = findRelatedPosts(currentPost, allPosts);
+            renderPost(currentPost, relatedPosts);
+        }
+
+        init();
+    </script>
 </body>
 </html>
