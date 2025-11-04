@@ -176,6 +176,11 @@
             padding: 60px 20px;
             color: #7f8c8d;
         }
+        .error {
+            text-align: center;
+            padding: 60px 20px;
+            color: #e74c3c;
+        }
         @media (max-width: 768px) {
             .post-header, .post-content, .post-labels-section, .related-posts {
                 padding: 20px;
@@ -200,8 +205,11 @@
     <script>
         async function fetchPostsList() {
             try {
-                const response = await fetch('../posts/index.json');
-                return await response.json();
+                const response = await fetch('/posts/index.json');
+                if (!response.ok) throw new Error('Failed to load posts list');
+                const postFiles = await response.json();
+                console.log('Loaded posts list:', postFiles);
+                return postFiles;
             } catch (error) {
                 console.error('Error loading posts list:', error);
                 return [];
@@ -210,8 +218,10 @@
 
         async function fetchPost(filename) {
             try {
-                const response = await fetch(`../posts/${filename}`);
+                const response = await fetch(`/posts/${filename}`);
+                if (!response.ok) throw new Error(`Failed to load post: ${filename}`);
                 const text = await response.text();
+                console.log(`Loaded post ${filename}`);
                 return parseMarkdown(text, filename);
             } catch (error) {
                 console.error(`Error loading post ${filename}:`, error);
@@ -223,14 +233,19 @@
             const frontmatterRegex = /^---\s*\n([\s\S]*?)\n---\s*\n([\s\S]*)$/;
             const match = text.match(frontmatterRegex);
             
-            if (!match) return null;
+            if (!match) {
+                console.error('No frontmatter found in', filename);
+                return null;
+            }
             
             const frontmatter = {};
             const frontmatterLines = match[1].split('\n');
             frontmatterLines.forEach(line => {
-                const [key, ...valueParts] = line.split(':');
-                if (key && valueParts.length) {
-                    frontmatter[key.trim()] = valueParts.join(':').trim();
+                const colonIndex = line.indexOf(':');
+                if (colonIndex > -1) {
+                    const key = line.substring(0, colonIndex).trim();
+                    const value = line.substring(colonIndex + 1).trim();
+                    frontmatter[key] = value;
                 }
             });
             
@@ -325,11 +340,19 @@
             const slug = urlParams.get('slug');
             
             if (!slug) {
-                container.innerHTML = '<div class="loading">Post not found</div>';
+                container.innerHTML = '<div class="error">No post slug provided in URL</div>';
                 return;
             }
             
+            console.log('Looking for post with slug:', slug);
+            
             const postFiles = await fetchPostsList();
+            
+            if (postFiles.length === 0) {
+                container.innerHTML = '<div class="error">No posts found. Make sure /posts/index.json exists.</div>';
+                return;
+            }
+            
             const allPosts = [];
             
             for (const file of postFiles) {
@@ -339,10 +362,12 @@
                 }
             }
             
+            console.log('All loaded posts:', allPosts);
+            
             const currentPost = allPosts.find(p => p.slug === slug);
             
             if (!currentPost) {
-                container.innerHTML = '<div class="loading">Post not found</div>';
+                container.innerHTML = `<div class="error">Post "${slug}" not found. Available posts: ${allPosts.map(p => p.slug).join(', ')}</div>`;
                 return;
             }
             
