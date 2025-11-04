@@ -130,11 +130,6 @@
     </style>
 </head>
 <body>
-    <header>
-        <div class="container">
-            <h1>📝 My Blog</h1>
-        </div>
-    </header>
     
     <div class="container">
         <div id="posts-container" class="posts-grid"></div>
@@ -146,7 +141,7 @@
     <script>
         let allPosts = [];
         let displayedPosts = 0;
-        const postsPerPage = 10;
+        const postsPerPage = 2;
 
         // Detect the base path for GitHub Pages
         function getBasePath() {
