@@ -1,84 +1,79 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title id="pageTitle">Post - Shivam Kumar</title>
-    <link rel="stylesheet" href="post-style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+  <meta charset="UTF-8" />
+  <title>Post | shivamnox</title>
+  <link rel="stylesheet" href="../assets/style.css" />
 </head>
 <body>
-    <header>
-        <nav class="navbar">
-            <div class="nav-container">
-                <a href="../index.html" class="logo">Shivam Kumar</a>
-                <ul class="nav-menu">
-                    <li><a href="../index.html">Home</a></li>
-                    <li><a href="index.html" class="active">Blog</a></li>
-                    <li><a href="../index.html#contact">Contact</a></li>
-                </ul>
-            </div>
-        </nav>
-    </header>
+  <div id="post"></div>
+  <h3>Related Posts</h3>
+  <div id="related-posts"></div>
 
-    <main class="post-main">
-        <article class="post-container">
-            <div class="loading">
-                <i class="fas fa-spinner fa-spin"></i>
-                <p>Loading post...</p>
-            </div>
-            
-            <div id="postContent" style="display: none;">
-                <div class="post-header">
-                    <h1 id="postTitle"></h1>
-                    
-                    <div class="post-meta">
-                        <div class="meta-item">
-                            <i class="fab fa-github"></i>
-                            <span id="postAuthor"></span>
-                        </div>
-                        <div class="meta-item">
-                            <i class="far fa-calendar"></i>
-                            <span id="postDate"></span>
-                        </div>
-                    </div>
-                </div>
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <script>
+    async function loadPost() {
+      const params = new URLSearchParams(location.search);
+      const slug = params.get('slug');
+      if (!slug) return;
 
-                <div id="postImage" class="post-featured-image"></div>
+      const res = await fetch(`../posts/${slug}.md`);
+      const text = await res.text();
+      const meta = extractFrontmatter(text);
+      const content = text.split('---')[2]?.trim() || "";
 
-                <div id="postBody" class="post-body"></div>
+      document.title = meta.title + " | shivamnox";
+      document.getElementById('post').innerHTML = `
+        <h1>${meta.title}</h1>
+        <p class="meta">${meta.author} • ${formatDate(meta.date)}</p>
+        <img src="${meta.image}" alt="${meta.title}" />
+        <div class="content">${marked.parse(content)}</div>
+        <p class="labels">${meta.labels.split(',').map(l => `<span>${l.trim()}</span>`).join(' ')}</p>
+      `;
 
-                <div class="post-labels-section">
-                    <h3>Labels</h3>
-                    <div id="postLabels" class="post-labels"></div>
-                </div>
+      loadRelated(meta.labels.split(',').map(l => l.trim()), slug);
+    }
 
-                <div class="related-posts">
-                    <h3>Related Posts</h3>
-                    <div id="relatedPosts" class="related-posts-grid"></div>
-                </div>
+    async function loadRelated(labels, currentSlug) {
+      const res = await fetch('../posts/index.json');
+      const files = await res.json();
+      const relatedContainer = document.getElementById('related-posts');
+      
+      for (const file of files) {
+        if (file.replace('.md', '') === currentSlug) continue;
+        const post = await fetch(`../posts/${file}`).then(r => r.text());
+        const meta = extractFrontmatter(post);
+        const postLabels = meta.labels.split(',').map(l => l.trim());
+        if (labels.some(l => postLabels.includes(l))) {
+          const el = document.createElement('div');
+          el.className = 'related';
+          el.innerHTML = `
+            <a href="post.html?slug=${file.replace('.md','')}">
+              <img src="${meta.image}" alt="${meta.title}" />
+              <h4>${meta.title}</h4>
+            </a>`;
+          relatedContainer.appendChild(el);
+        }
+      }
+    }
 
-                <div class="post-navigation">
-                    <a href="index.html" class="back-to-blog">
-                        <i class="fas fa-arrow-left"></i> Back to Blog
-                    </a>
-                </div>
-            </div>
-        </article>
-    </main>
+    function extractFrontmatter(md) {
+      const match = md.match(/^---\n([\s\S]*?)\n---/);
+      const fm = {};
+      if (match) {
+        match[1].split('\n').forEach(line => {
+          const [key, ...rest] = line.split(':');
+          fm[key.trim()] = rest.join(':').trim();
+        });
+      }
+      return fm;
+    }
 
-    <footer>
-        <div class="footer-container">
-            <p>&copy; 2025 Shivam Kumar. All rights reserved.</p>
-            <div class="social-links">
-                <a href="https://github.com/shivamnox" target="_blank"><i class="fab fa-github"></i></a>
-                <a href="mailto:shivamnox@gmail.com"><i class="fas fa-envelope"></i></a>
-            </div>
-        </div>
-    </footer>
+    function formatDate(d) {
+      return new Date(d).toLocaleDateString('en-US', {year:'numeric', month:'long', day:'numeric'});
+    }
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
-    <script src="post-script.js"></script>
+    loadPost();
+  </script>
 </body>
 </html>
