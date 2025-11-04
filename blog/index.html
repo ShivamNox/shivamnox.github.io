@@ -117,6 +117,11 @@
             padding: 40px;
             color: #7f8c8d;
         }
+        .error {
+            text-align: center;
+            padding: 40px;
+            color: #e74c3c;
+        }
         @media (max-width: 768px) {
             .posts-grid {
                 grid-template-columns: 1fr;
@@ -145,8 +150,10 @@
 
         async function fetchPostsList() {
             try {
-                const response = await fetch('../posts/index.json');
+                const response = await fetch('/posts/index.json');
+                if (!response.ok) throw new Error('Failed to load posts list');
                 const postFiles = await response.json();
+                console.log('Loaded posts list:', postFiles);
                 return postFiles;
             } catch (error) {
                 console.error('Error loading posts list:', error);
@@ -156,8 +163,10 @@
 
         async function fetchPost(filename) {
             try {
-                const response = await fetch(`../posts/${filename}`);
+                const response = await fetch(`/posts/${filename}`);
+                if (!response.ok) throw new Error(`Failed to load post: ${filename}`);
                 const text = await response.text();
+                console.log(`Loaded post ${filename}`);
                 return parseMarkdown(text, filename);
             } catch (error) {
                 console.error(`Error loading post ${filename}:`, error);
@@ -169,14 +178,19 @@
             const frontmatterRegex = /^---\s*\n([\s\S]*?)\n---\s*\n([\s\S]*)$/;
             const match = text.match(frontmatterRegex);
             
-            if (!match) return null;
+            if (!match) {
+                console.error('No frontmatter found in', filename);
+                return null;
+            }
             
             const frontmatter = {};
             const frontmatterLines = match[1].split('\n');
             frontmatterLines.forEach(line => {
-                const [key, ...valueParts] = line.split(':');
-                if (key && valueParts.length) {
-                    frontmatter[key.trim()] = valueParts.join(':').trim();
+                const colonIndex = line.indexOf(':');
+                if (colonIndex > -1) {
+                    const key = line.substring(0, colonIndex).trim();
+                    const value = line.substring(colonIndex + 1).trim();
+                    frontmatter[key] = value;
                 }
             });
             
@@ -248,6 +262,12 @@
             
             const postFiles = await fetchPostsList();
             
+            if (postFiles.length === 0) {
+                container.innerHTML = '<div class="error">No posts found. Make sure /posts/index.json exists and contains post filenames.</div>';
+                document.getElementById('load-more-btn').style.display = 'none';
+                return;
+            }
+            
             for (const file of postFiles) {
                 const post = await fetchPost(file);
                 if (post) {
@@ -260,7 +280,7 @@
             container.innerHTML = '';
             
             if (allPosts.length === 0) {
-                container.innerHTML = '<div class="loading">No posts found</div>';
+                container.innerHTML = '<div class="error">Could not load any posts. Check the browser console for errors.</div>';
                 document.getElementById('load-more-btn').style.display = 'none';
             } else {
                 renderPosts();
