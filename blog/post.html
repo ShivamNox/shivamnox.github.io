@@ -1,33 +1,84 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Post - Blog</title>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/4.3.0/marked.min.js"></script>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-            line-height: 1.6;
-            color: #333;
-            background: #f5f5f5;
-        }
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 20px;
-        }
-        header {
-            background: white;
-            padding: 20px 0;
-            margin-bottom: 40px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+<!-- HTML Meta Tags -->
+<title>ShivamNox | Backend Developer & Automation Engineer</title>
+<meta name="description" content="Shivam Kumar is a Backend Developer and Automation Engineer specializing in scalable systems, REST APIs, and DevOps workflows using Node.js, Docker, and GitHub Actions.">
+<meta name="keywords" content="Backend Developer, Automation Engineer, Node.js, REST API, CI/CD, Docker, MongoDB, ShivamNox, Shivam Kumar, DevOps, GitHub Actions, Cloud, JavaScript Developer">
+<meta name="author" content="Shivam Kumar">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- Open Graph / Facebook -->
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://shivamnox.github.io/">
+<meta property="og:title" content="Shivam Kumar | Backend Developer & Automation Engineer">
+<meta property="og:description" content="Experienced in building scalable backends, automating workflows, and deploying cloud-based APIs. Portfolio of Shivam Kumar, a passionate Node.js developer.">
+<meta property="og:image" content="https://raw.githubusercontent.com/ShivamNox/shivamnox.github.com/main/logo.png">
+
+<!-- Twitter -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:url" content="https://shivamnox.github.io/">
+<meta name="twitter:title" content="Shivam Kumar | Backend Developer & Automation Engineer">
+<meta name="twitter:description" content="Experienced in building scalable backends, automating workflows, and deploying cloud-based APIs. Portfolio of Shivam Kumar, a passionate Node.js developer.">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/ShivamNox/shivamnox.github.com/main/logo.png">
+
+<!-- Google Site Verification -->
+<meta name="google-site-verification" content="nkYmV7SZkQHkcvwnUho7juDqi7kgik3meTuF5wjtqx8">
+
+<!-- Theme color -->
+<meta name="theme-color" content="#0073aa">
+
+  
+  <!-- Favicons -->
+  <link href="https://raw.githubusercontent.com/ShivamNox/shivamnox.github.com/main/logo.png" rel="icon">
+  <link rel="apple-touch-icon" href="https://raw.githubusercontent.com/ShivamNox/shivamnox.github.com/main/logo.png">
+  <link rel="shortcut icon" href="https://raw.githubusercontent.com/ShivamNox/shivamnox.github.com/main/logo.png"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Raleway:300,300i,400,400i,500,500i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i&display=swap" rel="stylesheet"/>
+<link href="style.css" rel="stylesheet" />
+</head>
+<body>
+  <!-- Mobile Menu Toggle -->
+  <button type="button" class="mobile-nav-toggle" onclick="toggleMobileNav()">
+    <i class="fas fa-bars"></i>
+  </button>
+
+  <!-- Header Sidebar -->
+  <header id="header">
+    <div class="profile">
+      <img src="https://avatars.githubusercontent.com/u/172183580?v=4" alt="Shivam Kumar">
+      <h1><a href="/">Shivam Kumar</a></h1>
+      <div class="social-links">
+        <a href="https://github.com/shivamnox" target="_blank"><i class="fab fa-github"></i></a>
+        <a href="https://www.linkedin.com/in/shivamnox/" target="_blank"><i class="fab fa-linkedin"></i></a>
+        <a href="https://twitter.com/shivamnox" target="_blank"><i class="fab fa-twitter"></i></a>
+        <a href="mailto:shivamnox@gmail.com" aria-label="Email"  target="_blank"><i class="fas fa-envelope"></i></a>
+      </div>
+    </div>
+
+    <nav class="nav-menu">
+      <ul>
+        <li><a href="#hero" class="active"><i class="fas fa-home"></i><span>Home</span></a></li>
+        <li><a href="#about"><i class="fas fa-user"></i><span>About</span></a></li>
+        <li><a href="#projects"><i class="fas fa-book"></i><span>Projects</span></a></li>
+        <li><a href="#services"><i class="fas fa-server"></i><span>Services</span></a></li>
+        <li><a href="#skills"><i class="fas fa-code"></i><span>Skills</span></a></li>
+        <li><a href="#resume"><i class="fas fa-file"></i><span>Resume</span></a></li>
+        <li><a href="#contact"><i class="fas fa-envelope"></i><span>Contact</span></a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <!-- Main Content -->
+  <main id="main">
+
+<style>
+
         .back-link {
             color: #3498db;
             text-decoration: none;
@@ -190,13 +241,8 @@
             }
         }
     </style>
-</head>
-<body>
-    <header>
-        <div class="container">
-            <a href="index.html" class="back-link">← Back to Blog</a>
-        </div>
-    </header>
+
+
     
     <div class="container">
         <div id="post-container"></div>
@@ -395,5 +441,77 @@
 
         init();
     </script>
+
+
+      
+  </main>
+
+  <!-- Footer -->
+  <footer id="footer">
+    <div class="container">
+      <div class="copyright">
+        © 2025 <strong><span>ShivamNox</span></strong>. All Rights Reserved
+      </div>
+    </div>
+  </footer>
+
+  <!-- Back to Top Button -->
+  <a href="javascript:void(0)" class="back-to-top">
+    <i class="fas fa-arrow-up"></i>
+  </a>
+
+  <!-- Success Popup -->
+  <div id="success-popup" style="
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 9999;
+    text-align: center;
+    color: white;
+    font-family: sans-serif;
+    flex-direction: column;
+    align-items: center;
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 0 20px rgba(0,0,0,0.2);
+    min-width: 180px;
+  ">
+    <span onclick="closeSuccessPopup()" style="
+      position: absolute;
+      top: 8px;
+      right: 12px;
+      font-size: 20px;
+      color: #28a745;
+      cursor: pointer;
+      font-weight: bold;
+    ">&times;</span>
+
+    <div style="
+      background-color: #28a745;
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      box-shadow: 0 0 15px rgba(40, 167, 69, 0.7);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    ">
+      <svg xmlns="http://www.w3.org/2000/svg" width="50" height="50" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+        <path id="checkmark-path" d="M5 13l4 4L19 7" />
+      </svg>
+    </div>
+
+    <p style="margin-top: 12px; font-size: 14px; color: #28a745;">
+      Message Sent Successfully<br>I will contact you back soon.
+    </p>
+  </div>
+
+  <!-- JavaScript -->
+  <script src="script.js"></script>
 </body>
 </html>
+
+
