@@ -203,9 +203,23 @@
     </div>
 
     <script>
+        // Detect the base path for GitHub Pages
+        function getBasePath() {
+            const path = window.location.pathname;
+            // If we're in /blog/ directory, go up one level
+            if (path.includes('/blog/')) {
+                return path.split('/blog/')[0];
+            }
+            return '';
+        }
+
+        const basePath = getBasePath();
+
         async function fetchPostsList() {
             try {
-                const response = await fetch('/posts/index.json');
+                const url = `${basePath}/posts/index.json`;
+                console.log('Fetching posts list from:', url);
+                const response = await fetch(url);
                 if (!response.ok) throw new Error('Failed to load posts list');
                 const postFiles = await response.json();
                 console.log('Loaded posts list:', postFiles);
@@ -218,7 +232,9 @@
 
         async function fetchPost(filename) {
             try {
-                const response = await fetch(`/posts/${filename}`);
+                const url = `${basePath}/posts/${filename}`;
+                console.log('Fetching post from:', url);
+                const response = await fetch(url);
                 if (!response.ok) throw new Error(`Failed to load post: ${filename}`);
                 const text = await response.text();
                 console.log(`Loaded post ${filename}`);
@@ -335,6 +351,8 @@
         async function init() {
             const container = document.getElementById('post-container');
             container.innerHTML = '<div class="loading">Loading post...</div>';
+            
+            console.log('Base path:', basePath);
             
             const urlParams = new URLSearchParams(window.location.search);
             const slug = urlParams.get('slug');
