@@ -213,7 +213,7 @@
 
         function createPostCard(post) {
             return `
-                <a href="post.html?slug=${post.slug}" class="post-card">
+                <a href="blog/post.html?slug=${post.slug}" class="post-card">
                     ${post.image ? `<img src="${post.image}" alt="${post.title}" class="post-image">` : '<div class="post-image"></div>'}
                     <div class="post-content">
                         <h2 class="post-title">${post.title}</h2>
