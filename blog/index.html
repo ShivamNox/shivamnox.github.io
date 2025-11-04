@@ -1,61 +1,81 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Blog - Shivam Kumar</title>
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <meta charset="UTF-8" />
+  <title>My Blog | shivamnox</title>
+  <link rel="stylesheet" href="../assets/style.css" />
 </head>
 <body>
-    <header>
-        <nav class="navbar">
-            <div class="nav-container">
-                <a href="/" class="logo">Shivam Kumar</a>
-                <ul class="nav-menu">
-                    <li><a href="/">Home</a></li>
-                    <li><a href="/blog" class="active">Blog</a></li>
-                    <li><a href="/#contact">Contact</a></li>
-                </ul>
-            </div>
-        </nav>
-    </header>
+  <h1>My Blog</h1>
+  <div id="posts-container"></div>
+  <button id="load-more" style="display:none;">Load More</button>
 
-    <main class="blog-main">
-        <div class="blog-container">
-            <div class="blog-header">
-                <h1>Blog</h1>
-                <p>Thoughts on backend development, automation, and tech</p>
-            </div>
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <script>
+    const POSTS_PER_PAGE = 10;
+    let allPosts = [];
+    let currentPage = 1;
 
-            <div class="search-filter">
-                <input type="text" id="searchInput" placeholder="Search posts...">
-                <select id="labelFilter">
-                    <option value="">All Labels</option>
-                </select>
-            </div>
+    async function loadPosts() {
+      const res = await fetch('../posts/index.json');
+      const postFiles = await res.json();
+      allPosts = postFiles.reverse(); // newest first
+      renderPosts();
+    }
 
-            <div id="blogPosts" class="blog-posts">
-                <div class="loading">
-                    <i class="fas fa-spinner fa-spin"></i>
-                    <p>Loading posts...</p>
-                </div>
-            </div>
+    async function renderPosts() {
+      const start = (currentPage - 1) * POSTS_PER_PAGE;
+      const end = currentPage * POSTS_PER_PAGE;
+      const slice = allPosts.slice(start, end);
+      const container = document.getElementById('posts-container');
 
-            <div id="pagination" class="pagination"></div>
-        </div>
-    </main>
+      for (const file of slice) {
+        const post = await fetch(`../posts/${file}`).then(r => r.text());
+        const meta = extractFrontmatter(post);
+        const content = post.split('---')[2]?.trim() || "";
+        const excerpt = content.split('\n').slice(0, 3).join(' ');
 
-    <footer>
-        <div class="footer-container">
-            <p>&copy; 2025 Shivam Kumar. All rights reserved.</p>
-            <div class="social-links">
-                <a href="https://github.com/shivamnox" target="_blank"><i class="fab fa-github"></i></a>
-                <a href="mailto:shivamnox@gmail.com"><i class="fas fa-envelope"></i></a>
-            </div>
-        </div>
-    </footer>
+        const el = document.createElement('div');
+        el.className = 'post-card';
+        el.innerHTML = `
+          <img src="${meta.image}" alt="${meta.title}" />
+          <h2><a href="post.html?slug=${file.replace('.md','')}">${meta.title}</a></h2>
+          <p class="meta">${meta.author} • ${formatDate(meta.date)}</p>
+          <p>${excerpt}</p>
+          <p class="labels">${meta.labels.split(',').map(l => `<span>${l.trim()}</span>`).join(' ')}</p>
+        `;
+        container.appendChild(el);
+      }
 
-    <script src="script.js"></script>
+      const loadMoreBtn = document.getElementById('load-more');
+      if (end < allPosts.length) {
+        loadMoreBtn.style.display = 'block';
+        loadMoreBtn.onclick = () => {
+          currentPage++;
+          renderPosts();
+        };
+      } else {
+        loadMoreBtn.style.display = 'none';
+      }
+    }
+
+    function extractFrontmatter(md) {
+      const match = md.match(/^---\n([\s\S]*?)\n---/);
+      const fm = {};
+      if (match) {
+        match[1].split('\n').forEach(line => {
+          const [key, ...rest] = line.split(':');
+          fm[key.trim()] = rest.join(':').trim();
+        });
+      }
+      return fm;
+    }
+
+    function formatDate(d) {
+      return new Date(d).toLocaleDateString('en-US', {year:'numeric', month:'long', day:'numeric'});
+    }
+
+    loadPosts();
+  </script>
 </body>
 </html>
