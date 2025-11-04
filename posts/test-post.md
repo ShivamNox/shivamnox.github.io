@@ -1,11 +1,10 @@
-```
 ---
 title: Test Post
 author: shivamnox
 date: 2025-01-20
-labels: Test
+labels: Test, Markdown, Dev
+image: https://imagesrcurl
 ---
-
 
 # This is a Test Post
 
@@ -27,5 +26,3 @@ If you can see this post, then your blog system is working!
 Once this works, you can add more complex posts with images and code blocks.
 
 Happy blogging!
-
-```
