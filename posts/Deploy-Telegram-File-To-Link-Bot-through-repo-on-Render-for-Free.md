@@ -3,7 +3,7 @@ title: Deploy Telegram File To Link Bot through repo on Render (Free)
 author: shivamnox
 date: 2025-11-05
 image: https://i.ibb.co/DDBXLMQQ/Screenshot-2025-11-05-121055.png
-labels: Telegram, Bot, Node.js, Render, Deployment
+labels: Telegram, Bot, Python3, Render, Deployment
 ---
 
 # Deploy Telegram File To Link or File Stream Bot via GitHub
@@ -16,7 +16,7 @@ This guide will walk you through setting it up using the [FileStreamBot-Pro](htt
 ## 📦 What is This Bot?
 
 This Telegram bot converts any file sent to it into a direct download or streaming link.  
-It’s built using **Node.js** and **Python-Telegram-Bot / Pyrogram** and supports MongoDB as a database.
+It’s built using **Python3** and **Python-Telegram-Bot / Pyrogram** and supports MongoDB as a database.
 
 ---
 
@@ -49,14 +49,14 @@ Before deployment, you’ll need these configuration values:
 
 ### 2. Get BOT_TOKEN
 1. Open Telegram and search for **@BotFather**.
-2. Send `/newbot` and follow the steps.
-3. Copy the **bot token** you receive.
+2. Send `/newbot` and follow the steps for Bot Name and Bot Username.
+3. After Bot Creation Copy the **bot token** you receive.
 
 ### 3. Get BIN_CHANNEL
 1. Create a **private Telegram channel**.
 2. Add your bot as **admin** in that channel.
-3. Use this tool to get the channel ID:  
-   Send `/id` to [@MissRose_bot](https://t.me/MissRose_bot) or [@getidsbot](https://t.me/getidsbot).  
+3. Now send a any message in that channel.
+4. Then forwored that message to [@MissRose_bot](https://t.me/MissRose_bot) or [@getidsbot](https://t.me/getidsbot) and Send `/id` in replay of that forworeded message to get the channel ID.
    The ID will look like: `-100xxxxxxxxxx`
 
 ### 4. Get DATABASE_URL
@@ -74,7 +74,7 @@ Use [MongoDB Atlas](https://www.mongodb.com/cloud/atlas/register):
 
 ## 🚀 Deploy on Render (Free Hosting)
 
-Render allows you to deploy Node.js apps easily.
+Render allows you to deploy Python3 apps easily.
 
 > 💡 **Note:** Render free tier is **only available on mobile browsers**.  
 > If you use desktop, it may require payment details.
@@ -94,13 +94,12 @@ Click **Fork** to add it to your account.
 When prompted:
 - **Build Command:**  
   ```bash
-  npm install
+  pip install -r requirements.txt
   ```
 
 - **Start Command:**
-
   ```bash
-  npm start
+  python3 -m ShivamNox.__main__
   ```
 
 ### Step 4: Add Environment Variables
