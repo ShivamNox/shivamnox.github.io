@@ -95,9 +95,9 @@ When prompted:
 - **Build Command:**  
   ```bash
   npm install
-````
+  ```
 
-* **Start Command:**
+- **Start Command:**
 
   ```bash
   npm start
@@ -107,7 +107,7 @@ When prompted:
 
 Click **Environment** and add all the variables listed earlier:
 
-```
+```bash
 API_ID=29876636
 API_HASH=52b6dfbaee00000000cefbea7c2e04
 BOT_TOKEN=your_bot_token_here
