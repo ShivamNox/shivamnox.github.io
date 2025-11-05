@@ -53,6 +53,8 @@
       display: inline-block;
       margin-bottom: 30px;
       font-size: 16px;
+      margin-left:10px;
+      margin-top:12px;
     }
     .back-link:hover {
       text-decoration: underline;
@@ -62,9 +64,13 @@
     }
 
     /* Post Title - No Background */
+    .post-header { 
+      padding: 40px; 
+      margin-bottom: 30px; 
+     }
     .post-title {
       font-size: 2.5em;
-      margin-bottom: 15px;
+      margin-bottom: 0px;
       color: #2c3e50;
       line-height: 1.2;
       font-weight: 700;
@@ -532,10 +538,12 @@
         
         const html = `
           <!-- Post Title - No Background -->
+          <div class="post-header">
           <h1 class="post-title">${post.title}</h1>
           <div class="post-meta">
             <i class="fas fa-user"></i> ${post.author} • 
             <i class="fas fa-calendar"></i> ${formatDate(post.date)}
+          </div>
           </div>
           
           <!-- Main Post Card - Contains Image + Content + Labels -->
