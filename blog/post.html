@@ -4,25 +4,26 @@
   <meta charset="utf-8">
   <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
-  <!-- HTML Meta Tags -->
-  <title>ShivamNox | Backend Developer & Automation Engineer</title>
-  <meta name="description" content="Shivam Kumar is a Backend Developer and Automation Engineer specializing in scalable systems, REST APIs, and DevOps workflows using Node.js, Docker, and GitHub Actions.">
-  <meta name="keywords" content="Backend Developer, Automation Engineer, Node.js, REST API, CI/CD, Docker, MongoDB, ShivamNox, Shivam Kumar, DevOps, GitHub Actions, Cloud, JavaScript Developer">
+  <!-- HTML Meta Tags - Will be updated dynamically by JavaScript -->
+  <title>Loading... - ShivamNox Blog</title>
+  <meta name="description" content="Loading blog post...">
+  <meta name="keywords" content="ShivamNox, Blog, Backend Developer">
   <meta name="author" content="Shivam Kumar">
 
-  <!-- Open Graph / Facebook -->
-  <meta property="og:type" content="website">
-  <meta property="og:url" content="https://shivamnox.github.io/">
-  <meta property="og:title" content="Shivam Kumar | Backend Developer & Automation Engineer">
-  <meta property="og:description" content="Experienced in building scalable backends, automating workflows, and deploying cloud-based APIs. Portfolio of Shivam Kumar, a passionate Node.js developer.">
-  <meta property="og:image" content="https://raw.githubusercontent.com/ShivamNox/shivamnox.github.com/main/logo.png">
+  <!-- Open Graph / Facebook - Will be updated dynamically -->
+  <meta property="og:type" content="article">
+  <meta property="og:url" content="">
+  <meta property="og:title" content="Loading... - ShivamNox Blog">
+  <meta property="og:description" content="Loading blog post...">
+  <meta property="og:image" content="">
 
-  <!-- Twitter -->
+  <!-- Twitter - Will be updated dynamically -->
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:url" content="https://shivamnox.github.io/">
-  <meta name="twitter:title" content="Shivam Kumar | Backend Developer & Automation Engineer">
-  <meta name="twitter:description" content="Experienced in building scalable backends, automating workflows, and deploying cloud-based APIs. Portfolio of Shivam Kumar, a passionate Node.js developer.">
-  <meta name="twitter:image" content="https://raw.githubusercontent.com/ShivamNox/shivamnox.github.com/main/logo.png">
+  <meta name="twitter:url" content="">
+  <meta name="twitter:title" content="Loading... - ShivamNox Blog">
+  <meta name="twitter:description" content="Loading blog post...">
+  <meta name="twitter:image" content="">
+  <meta name="twitter:creator" content="@shivamnox">
 
   <!-- Google Site Verification -->
   <meta name="google-site-verification" content="nkYmV7SZkQHkcvwnUho7juDqi7kgik3meTuF5wjtqx8">
@@ -71,7 +72,6 @@
     @media(max-width:768px) {
       .post-header {
         padding: 0px 20px;
-
       }
     }
     .post-title {
@@ -441,6 +441,90 @@
 
       const basePath = getBasePath();
 
+      // Update meta tags for social sharing
+      function updateMetaTags(post) {
+        const postUrl = window.location.href;
+        
+        // Title format: "Post Title - Blog ShivamNox"
+        const postTitle = `${post.title} - Blog ShivamNox`;
+        
+        // Create description from content (first 160 characters, cleaned)
+        const plainText = post.content
+          .replace(/[#*`\[\]]/g, '') // Remove markdown symbols
+          .replace(/\n+/g, ' ') // Replace newlines with spaces
+          .replace(/\s+/g, ' ') // Replace multiple spaces with single space
+          .trim();
+        const postDescription = plainText.substring(0, 160) + (plainText.length > 160 ? '...' : '');
+        
+        // Post image or default logo
+        const postImage = post.image || 'https://raw.githubusercontent.com/ShivamNox/shivamnox.github.com/main/logo.png';
+        
+        // Keywords from post labels
+        const postKeywords = post.labels && post.labels.length > 0 
+          ? post.labels.join(', ') + ', ShivamNox, Blog, ' + post.author
+          : 'ShivamNox, Blog, Backend Developer, ' + post.author;
+        
+        // Update document title
+        document.title = postTitle;
+        
+        // Helper function to update or create meta tag
+        function setMetaTag(selector, attribute, attributeValue, content) {
+          let meta = document.querySelector(selector);
+          if (meta) {
+            meta.setAttribute('content', content);
+          } else {
+            meta = document.createElement('meta');
+            meta.setAttribute(attribute, attributeValue);
+            meta.setAttribute('content', content);
+            document.head.appendChild(meta);
+          }
+        }
+        
+        // Update standard meta tags
+        setMetaTag('meta[name="description"]', 'name', 'description', postDescription);
+        setMetaTag('meta[name="keywords"]', 'name', 'keywords', postKeywords);
+        setMetaTag('meta[name="author"]', 'name', 'author', post.author);
+        
+        // Update Open Graph meta tags (Facebook, LinkedIn, WhatsApp)
+        setMetaTag('meta[property="og:type"]', 'property', 'og:type', 'article');
+        setMetaTag('meta[property="og:url"]', 'property', 'og:url', postUrl);
+        setMetaTag('meta[property="og:title"]', 'property', 'og:title', postTitle);
+        setMetaTag('meta[property="og:description"]', 'property', 'og:description', postDescription);
+        setMetaTag('meta[property="og:image"]', 'property', 'og:image', postImage);
+        setMetaTag('meta[property="og:site_name"]', 'property', 'og:site_name', 'ShivamNox Blog');
+        setMetaTag('meta[property="article:author"]', 'property', 'article:author', post.author);
+        
+        if (post.date) {
+          setMetaTag('meta[property="article:published_time"]', 'property', 'article:published_time', post.date);
+        }
+        
+        // Update Twitter Card meta tags
+        setMetaTag('meta[name="twitter:card"]', 'name', 'twitter:card', 'summary_large_image');
+        setMetaTag('meta[name="twitter:url"]', 'name', 'twitter:url', postUrl);
+        setMetaTag('meta[name="twitter:title"]', 'name', 'twitter:title', postTitle);
+        setMetaTag('meta[name="twitter:description"]', 'name', 'twitter:description', postDescription);
+        setMetaTag('meta[name="twitter:image"]', 'name', 'twitter:image', postImage);
+        setMetaTag('meta[name="twitter:creator"]', 'name', 'twitter:creator', '@shivamnox');
+        
+        // Add canonical URL
+        let canonical = document.querySelector('link[rel="canonical"]');
+        if (canonical) {
+          canonical.setAttribute('href', postUrl);
+        } else {
+          canonical = document.createElement('link');
+          canonical.setAttribute('rel', 'canonical');
+          canonical.setAttribute('href', postUrl);
+          document.head.appendChild(canonical);
+        }
+        
+        console.log('✅ Meta tags updated successfully!');
+        console.log('📌 Title:', postTitle);
+        console.log('📝 Description:', postDescription);
+        console.log('🖼️ Image:', postImage);
+        console.log('🔗 URL:', postUrl);
+        console.log('🏷️ Keywords:', postKeywords);
+      }
+
       async function fetchPostsList() {
         try {
           const url = `https://shivamnox.vercel.app/posts/index.json`;
@@ -545,11 +629,11 @@
         const html = `
           <!-- Post Title - No Background -->
           <div class="post-header">
-          <h1 class="post-title">${post.title}</h1>
-          <div class="post-meta">
-            <i class="fas fa-user"></i> ${post.author} • 
-            <i class="fas fa-calendar"></i> ${formatDate(post.date)}
-          </div>
+            <h1 class="post-title">${post.title}</h1>
+            <div class="post-meta">
+              <i class="fas fa-user"></i> ${post.author} • 
+              <i class="fas fa-calendar"></i> ${formatDate(post.date)}
+            </div>
           </div>
           
           <!-- Main Post Card - Contains Image + Content + Labels -->
@@ -591,7 +675,9 @@
         `;
         
         container.innerHTML = html;
-        document.title = `${post.title} - ShivamNox Blog`;
+        
+        // Update meta tags AFTER rendering (important for SEO and social sharing)
+        updateMetaTags(post);
       }
 
       async function init() {
