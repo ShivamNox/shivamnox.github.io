@@ -1,5 +1,5 @@
 ---
-title: Deploy Telegram File To Link Bot on Render (Free)
+title: Deploy Telegram File To Link Bot through repo on Render (Free)
 author: shivamnox
 date: 2025-11-05
 image: https://images.unsplash.com/photo-1612831455540-cdf2982e4f7b?w=800&q=80
