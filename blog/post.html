@@ -51,7 +51,7 @@
       text-decoration: none;
       font-weight: 500;
       display: inline-block;
-      margin-bottom: 20px;
+      margin-bottom: 30px;
       font-size: 16px;
     }
     .back-link:hover {
@@ -60,42 +60,56 @@
     .back-link i {
       margin-right: 5px;
     }
-    .post-header {
-      background: white;
-      padding: 40px;
-      border-radius: 8px;
-      margin-bottom: 30px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    }
+
+    /* Post Title - No Background */
     .post-title {
       font-size: 2.5em;
-      margin-bottom: 20px;
+      margin-bottom: 15px;
       color: #2c3e50;
       line-height: 1.2;
+      font-weight: 700;
     }
+
     .post-meta {
       color: #7f8c8d;
       font-size: 1.1em;
-      margin-bottom: 20px;
+      margin-bottom: 30px;
+      padding-bottom: 20px;
+      border-bottom: 2px solid #e0e0e0;
     }
     .post-meta i {
       margin-right: 5px;
     }
-    .post-image {
-      width: 100%;
-      max-height: 400px;
-      object-fit: cover;
-      border-radius: 8px;
-      margin-bottom: 30px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    }
-    .post-content {
+
+    /* Main Post Card - Contains Everything */
+    .post-card {
       background: white;
       padding: 40px;
       border-radius: 8px;
       box-shadow: 0 2px 8px rgba(0,0,0,0.1);
       margin-bottom: 30px;
     }
+
+    /* Post Image - Medium Size */
+    .post-image-container {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .post-image {
+      max-width: 700px;
+      width: 100%;
+      height: auto;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      display: inline-block;
+    }
+
+    /* Post Content */
+    .post-content {
+      margin-bottom: 30px;
+    }
+
     .post-content h1 {
       margin-top: 30px;
       margin-bottom: 15px;
@@ -167,24 +181,28 @@
       height: auto;
       border-radius: 5px;
       margin: 15px 0;
+      display: block;
     }
+
+    /* Labels Section - Inside Same Card */
     .post-labels-section {
-      background: white;
-      padding: 30px 40px;
-      border-radius: 8px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-      margin-bottom: 30px;
+      padding-top: 20px;
+      border-top: 2px solid #e0e0e0;
+      margin-top: 30px;
     }
+
     .post-labels-section h3 {
       margin-bottom: 15px;
       color: #2c3e50;
-      font-size: 1.3em;
+      font-size: 1.2em;
     }
+
     .post-labels {
       display: flex;
       flex-wrap: wrap;
       gap: 10px;
     }
+
     .label {
       background: #e8f4f8;
       color: #2980b9;
@@ -198,6 +216,8 @@
       background: #2980b9;
       color: white;
     }
+
+    /* Related Posts */
     .related-posts {
       background: white;
       padding: 40px;
@@ -237,6 +257,8 @@
     .related-post-meta i {
       margin-right: 5px;
     }
+
+    /* Loading & Error States */
     .loading {
       text-align: center;
       padding: 60px 20px;
@@ -260,12 +282,20 @@
       margin-bottom: 15px;
       display: block;
     }
+
+    /* Responsive Design */
     @media (max-width: 768px) {
-      .post-header, .post-content, .post-labels-section, .related-posts {
+      .post-card, .related-posts {
         padding: 20px;
       }
       .post-title {
         font-size: 1.8em;
+      }
+      .post-meta {
+        font-size: 0.95em;
+      }
+      .post-image {
+        max-width: 100%;
       }
       .post-content h1 {
         font-size: 1.6em;
@@ -501,28 +531,34 @@
         const container = document.getElementById('post-container');
         
         const html = `
-          <div class="post-header">
-            <h1 class="post-title">${post.title}</h1>
-            <div class="post-meta">
-              <i class="fas fa-user"></i> ${post.author} • 
-              <i class="fas fa-calendar"></i> ${formatDate(post.date)}
-            </div>
+          <!-- Post Title - No Background -->
+          <h1 class="post-title">${post.title}</h1>
+          <div class="post-meta">
+            <i class="fas fa-user"></i> ${post.author} • 
+            <i class="fas fa-calendar"></i> ${formatDate(post.date)}
           </div>
           
-          ${post.image ? `<img src="${post.image}" alt="${post.title}" class="post-image">` : ''}
-          
-          <div class="post-content">
-            ${marked.parse(post.content)}
-          </div>
-          
-          ${post.labels && post.labels.length > 0 ? `
-            <div class="post-labels-section">
-              <h3><i class="fas fa-tags"></i> Labels</h3>
-              <div class="post-labels">
-                ${post.labels.map(label => `<span class="label">${label}</span>`).join('')}
+          <!-- Main Post Card - Contains Image + Content + Labels -->
+          <div class="post-card">
+            ${post.image ? `
+              <div class="post-image-container">
+                <img src="${post.image}" alt="${post.title}" class="post-image">
               </div>
+            ` : ''}
+            
+            <div class="post-content">
+              ${marked.parse(post.content)}
             </div>
-          ` : ''}
+            
+            ${post.labels && post.labels.length > 0 ? `
+              <div class="post-labels-section">
+                <h3><i class="fas fa-tags"></i> Labels</h3>
+                <div class="post-labels">
+                  ${post.labels.map(label => `<span class="label">${label}</span>`).join('')}
+                </div>
+              </div>
+            ` : ''}
+          </div>
           
           ${relatedPosts.length > 0 ? `
             <div class="related-posts">
