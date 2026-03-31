@@ -446,24 +446,25 @@
           ? `<div class="post-image"><img src="${post.image}" alt="${post.title}"></div>`
           : `<div class="post-image"><i class="fas fa-blog"></i></div>`;
         
-return `
-  <a href="post.html?slug=${post.slug}" class="post-row ${isFirst ? 'featured' : ''}">
-    <div class="post-thumb">
-      ${post.image ? `<img src="${post.image}" alt="${post.title}">` : `<i class="fas fa-blog"></i>`}
-    </div>
-    <div class="post-body">
-      <div class="post-title">${post.title}</div>
-      <div class="post-meta">
-        <span><i class="fas fa-user"></i> ${post.author}</span>
-        <span><i class="fas fa-calendar"></i> ${formatDate(post.date)}</span>
-      </div>
-      <p class="post-excerpt">${post.excerpt}</p>
-      <div class="post-labels">
-        ${post.labels.slice(0,3).map(l => `<span class="label">${l}</span>`).join('')}
-      </div>
-    </div>
-  </a>
-`;
+        return `
+          <a href="post.html?slug=${post.slug}" class="post-card">
+            ${imageHtml}
+            <div class="post-content">
+              <h2 class="post-title">${post.title}</h2>
+              <div class="post-meta">
+                <i class="fas fa-user"></i> ${post.author} • 
+                <i class="fas fa-calendar"></i> ${formatDate(post.date)}
+              </div>
+              <p class="post-excerpt">${post.excerpt}</p>
+              ${post.labels.length > 0 ? `
+                <div class="post-labels">
+                  ${post.labels.slice(0, 3).map(label => `<span class="label">${label}</span>`).join('')}
+                  ${post.labels.length > 3 ? `<span class="label">+${post.labels.length - 3}</span>` : ''}
+                </div>
+              ` : ''}
+            </div>
+          </a>
+        `;
       }
 
       function formatDate(dateString) {
