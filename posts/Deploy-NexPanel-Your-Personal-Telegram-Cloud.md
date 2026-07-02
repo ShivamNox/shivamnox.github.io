@@ -1,7 +1,7 @@
 ---
 title: NexPanel — Free Personal Cloud Storage with Telegram
 author: shivamnox
-date: 2026-01-15
+date: 2026-07-02
 image: https://raw.githubusercontent.com/ShivamNox/shivamnox.github.io/refs/heads/main/assets/img/Screenshot%202026-07-02%20184522.png
 labels: NodeJS, Telegram, Cloud Storage, Self-Hosted
 ---
