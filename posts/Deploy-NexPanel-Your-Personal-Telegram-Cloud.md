@@ -32,7 +32,6 @@ Open your terminal and run:
 ```bash
 git clone https://github.com/shivamnox/nex-pannel.git
 cd nex-pannel
-npm install
 npm start
 ```
 
