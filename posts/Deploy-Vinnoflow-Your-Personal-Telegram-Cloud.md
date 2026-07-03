@@ -1,12 +1,12 @@
 ---
-title: NexPanel — Free Personal Cloud Storage with Telegram
+title: Vinnoflow — Free Personal Cloud Storage with Telegram
 author: shivamnox
 date: 2026-07-02
-image: https://raw.githubusercontent.com/ShivamNox/shivamnox.github.io/refs/heads/main/assets/img/Screenshot%202026-07-02%20184522.png
+image: https://raw.githubusercontent.com/ShivamNox/shivamnox.github.io/refs/heads/main/assets/img/Screenshot%202026-07-03%20184636.png
 labels: NodeJS, Telegram, Cloud Storage, Self-Hosted
 ---
 
-# NexPanel — Your Own Free Cloud Storage 🚀
+# Vinnoflow — Your Own Free Cloud Storage 🚀
 
 Turn Telegram into your **personal Google Drive** — with a beautiful dashboard, unlimited storage, video streaming, and public sharing.
 
@@ -30,8 +30,8 @@ Turn Telegram into your **personal Google Drive** — with a beautiful dashboard
 Open your terminal and run:
 
 ```bash
-git clone https://github.com/shivamnox/nex-pannel.git
-cd nex-pannel
+git clone https://github.com/shivamnox/Vinnoflow.git
+cd Vinnoflow
 npm start
 ```
 
@@ -60,7 +60,7 @@ Paste your MongoDB link → click **Connect Database**.
    mongodb+srv://youruser:yourpass@cluster0.abc.mongodb.net/nexpanel
    ```
 8. Replace `<password>` with your real password
-9. Paste in NexPanel ✅
+9. Paste in Vinnoflow ✅
 
 ---
 
@@ -100,8 +100,8 @@ These identify you to Telegram.
 2. Log in with your phone number
 3. Click **API Development Tools**
 4. Fill:
-   - App title: `NexPanel`
-   - Short name: `nexpanel`
+   - App title: `Vinnoflow`
+   - Short name: `Vinnoflow`
    - Platform: `Other`
 5. Click **Create Application**
 6. Copy **API ID** (numbers) and **API Hash** (long text)
@@ -232,12 +232,12 @@ Click your **profile picture** on the sidebar (or go to `/profile`) to change:
 ## 🎁 That's It!
 
 ```bash
-git clone https://github.com/shivamnox/nex-pannel.git
-cd nex-pannel
+git clone https://github.com/shivamnox/Vinnoflow.git
+cd Vinnoflow
 npm install
 npm start
 ```
 
 Open **http://localhost:3000** → follow the wizard → enjoy your free cloud! 🚀
 
-⭐ Star the repo: **[github.com/shivamnox/nex-pannel](https://github.com/shivamnox/nex-pannel)**
+⭐ Star the repo: **[github.com/shivamnox/Vinnoflow](https://github.com/shivamnox/Vinnoflow)**
