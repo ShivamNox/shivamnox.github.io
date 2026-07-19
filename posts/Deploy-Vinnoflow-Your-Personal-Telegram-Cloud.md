@@ -32,6 +32,7 @@ Open your terminal and run:
 ```bash
 git clone https://github.com/shivamnox/Vinnoflow.git
 cd Vinnoflow
+npm run build
 npm start
 ```
 
@@ -234,7 +235,7 @@ Click your **profile picture** on the sidebar (or go to `/profile`) to change:
 ```bash
 git clone https://github.com/shivamnox/Vinnoflow.git
 cd Vinnoflow
-npm install
+npm run build
 npm start
 ```
 
